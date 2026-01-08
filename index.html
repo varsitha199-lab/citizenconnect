@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>CitizenConnect+ | Rural Development</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #f4f6f5;
+      margin: 0;
+      padding: 0;
+    }
+    header {
+      background: #1b5e20;
+      color: white;
+      padding: 15px;
+      text-align: center;
+    }
+    section {
+      background: white;
+      margin: 20px auto;
+      padding: 20px;
+      max-width: 600px;
+      border-radius: 8px;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+    }
+    h2 {
+      color: #1b5e20;
+    }
+    label {
+      display: block;
+      margin-top: 10px;
+    }
+    input, select, textarea, button {
+      width: 100%;
+      padding: 8px;
+      margin-top: 5px;
+    }
+    button {
+      background: #2e7d32;
+      color: white;
+      border: none;
+      cursor: pointer;
+      margin-top: 15px;
+    }
+    button:hover {
+      background: #1b5e20;
+    }
+    .output {
+      margin-top: 15px;
+      background: #e8f5e9;
+      padding: 10px;
+      border-radius: 5px;
+    }
+  </style>
+</head>
+<body>
+
+<header>
+  <h1>CitizenConnect+</h1>
+  <p>Rural Civic Issues & Welfare Guidance</p>
+</header>
+
+<section>
+  <h2>Report a Rural Issue</h2>
+  <label>Issue Type</label>
+  <select id="issueType">
+    <option>Road Damage</option>
+    <option>Borewell Failure</option>
+    <option>Water Supply</option>
+    <option>Sanitation</option>
+  </select>
+
+  <label>Village Name</label>
+  <input type="text" id="village" placeholder="Enter village name" />
+
+  <label>Description</label>
+  <textarea id="desc" placeholder="Describe the problem"></textarea>
+
+  <button onclick="submitIssue()">Submit Issue</button>
+
+  <div id="issueOutput" class="output"></div>
+</section>
+
+<section>
+  <h2>Check Welfare Scheme Eligibility</h2>
+
+  <label>Age</label>
+  <input type="number" id="age" />
+
+  <label>Income Group</label>
+  <select id="income">
+    <option>Low</option>
+    <option>Medium</option>
+    <option>High</option>
+  </select>
+
+  <label>Disability</label>
+  <select id="disability">
+    <option>No</option>
+    <option>Yes</option>
+  </select>
+
+  <button onclick="checkSchemes()">Find Schemes</button>
+
+  <div id="schemeOutput" class="output"></div>
+</section>
+
+<script>
+  function submitIssue() {
+    const type = document.getElementById('issueType').value;
+    const village = document.getElementById('village').value;
+    const id = Math.floor(Math.random() * 9000) + 1000;
+
+    document.getElementById('issueOutput').innerHTML =
+      `Issue <b>${type}</b> reported for <b>${village}</b>.<br>Reference ID: CC-${id}`;
+  }
+
+  function checkSchemes() {
+    const age = parseInt(document.getElementById('age').value);
+    const income = document.getElementById('income').value;
+    const disability = document.getElementById('disability').value;
+
+    let schemes = [];
+
+    if (age >= 60) schemes.push('Old Age Pension Scheme');
+    if (income === 'Low') schemes.push('Rural Housing Assistance');
+    if (disability === 'Yes') schemes.push('Disability Support Scheme');
+
+    if (schemes.length === 0) {
+      document.getElementById('schemeOutput').innerText = 'No schemes matched.';
+    } else {
+      document.getElementById('schemeOutput').innerHTML =
+        '<b>Eligible Schemes:</b><ul>' + schemes.map(s => `<li>${s}</li>`).join('') + '</ul>';
+    }
+  }
+</script>
+
+</body>
+</html>
