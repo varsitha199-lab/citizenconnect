@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>CitizenConnect+ | Rural Development</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #f4f6f5;
+      margin: 0;
+      padding: 0;
+    }
+    header {
+      background: #1b5e20;
+      color: white;
+      padding: 15px;
+      text-align: center;
+    }
+    section {
+      background: white;
+      margin: 20px auto;
+      padding: 20px;
+      max-width: 700px;
+      border-radius: 8px;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+    }
+    h2 {
+      color: #1b5e20;
+    }
+    label {
+      display: block;
+      margin-top: 10px;
+      font-weight: bold;
+    }
+    input, select, textarea, button {
+      width: 100%;
+      padding: 8px;
+      margin-top: 5px;
+    }
+    button {
+      background: #2e7d32;
+      color: white;
+      border: none;
+      cursor: pointer;
+      margin-top: 15px;
+    }
+    button:hover {
+      background: #1b5e20;
+    }
+    .output {
+      margin-top: 15px;
+      background: #e8f5e9;
+      padding: 10px;
+      border-radius: 5px;
+    }
+    .small {
+      font-size: 13px;
+      color: #555;
+    }
+  </style>
+</head>
+<body>
+
+<header>
+  <h1>CitizenConnect+</h1>
+  <p>Voice-enabled Rural Civic & Welfare Platform</p>
+</header>
+
+<section>
+  <h2>📍 Report a Rural Issue</h2>
+
+  <label>Issue Type</label>
+  <select id="issueType">
+    <option>Road Damage</option>
+    <option>Borewell Failure</option>
+    <option>Water Supply</option>
+    <option>Sanitation</option>
+    <option>Street Lighting</option>
+  </select>
+
+  <label>Village Name</label>
+  <input type="text" id="village" placeholder="Enter village name" />
+
+  <label>Describe the Issue (Voice Supported)</label>
+  <textarea id="desc" placeholder="Click microphone and speak or type"></textarea>
+  <button onclick="startVoice()">🎤 Speak</button>
+
+  <label>Upload Image (Optional)</label>
+  <input type="file" accept="image/*" />
+
+  <label>GPS Location</label>
+  <button onclick="getLocation()">Get Current Location</button>
+  <p id="location" class="small"></p>
+
+  <button onclick="submitIssue()">Submit Issue</button>
+
+  <div id="issueOutput" class="output"></div>
+</section>
+
+<section>
+  <h2>🎯 Welfare Scheme Eligibility Checker</h2>
+
+  <label>Age</label>
+  <input type="number" id="age" />
+
+  <label>Annual Income</label>
+  <select id="income">
+    <option value="low">Below ₹1.5 Lakh</option>
+    <option value="medium">₹1.5–3 Lakh</option>
+    <option value="high">Above ₹3 Lakh</option>
+  </select>
+
+  <label>Number of Daughters</label>
+  <input type="number" id="daughters" />
+
+  <label>Disability in Family</label>
+  <select id="disability">
+    <option>No</option>
+    <option>Yes</option>
+  </select>
+
+  <label>Land Holding</label>
+  <select id="land">
+    <option>Landless</option>
+    <option>Below 2 Acres</option>
+    <option>Above 2 Acres</option>
+  </select>
+
+  <button onclick="checkSchemes()">Check Eligible Schemes</button>
+
+  <div id="schemeOutput" class="output"></div>
+</section>
+
+<script>
+  // Voice Input
+  function startVoice() {
+    if (!('webkitSpeechRecognition' in window)) {
+      alert('Voice input not supported in this browser');
+      return;
+    }
+    const recognition = new webkitSpeechRecognition();
+    recognition.lang = 'en-IN';
+    recognition.start();
+    recognition.onresult = function(event) {
+      document.getElementById('desc').value = event.results[0][0].transcript;
+    };
+  }
+
+  // GPS Location
+  function getLocation() {
+    if (navigator.geolocation) {
+      navigator.geolocation.getCurrentPosition(function(position) {
+        document.getElementById('location').innerText =
+          `Latitude: ${position.coords.latitude}, Longitude: ${position.coords.longitude}`;
+      });
+    } else {
+      alert('GPS not supported');
+    }
+  }
+
+  // Submit Issue
+  function submitIssue() {
+    const type = document.getElementById('issueType').value;
+    const village = document.getElementById('village').value;
+    const id = Math.floor(Math.random() * 9000) + 1000;
+    document.getElementById('issueOutput').innerHTML =
+      `Your issue <b>${type}</b> has been recorded for <b>${village}</b>.<br>Reference ID: CC-${id}`;
+  }
+
+  // Scheme Logic
+  function checkSchemes() {
+    const age = parseInt(document.getElementById('age').value);
+    const income = document.getElementById('income').value;
+    const daughters = parseInt(document.getElementById('daughters').value);
+    const disability = document.getElementById('disability').value;
+    const land = document.getElementById('land').value;
+
+    let output = '<b>Eligibility Result:</b><ul>';
+
+    if (daughters >= 2 && income === 'low') {
+      output += `<li>Girl Child Welfare Scheme: Eligible for ₹50,000 assistance because you have ${daughters} daughters.</li>`;
+    }
+    if (age >= 60 && income !== 'high') {
+      output += '<li>Old Age Pension Scheme: ₹1,000/month</li>';
+    }
+    if (disability === 'Yes') {
+      output += '<li>Disability Support Scheme: ₹1,500/month</li>';
+    }
+    if (land === 'Landless' && income === 'low') {
+      output += '<li>Rural Housing Scheme: Financial support for house construction</li>';
+    }
+
+    output += '</ul>';
+    document.getElementById('schemeOutput').innerHTML = output;
+  }
+</script>
+
+</body>
+</html>
